@@ -10,18 +10,19 @@ TODO:
 
 const mongoose = require("mongoose");
 const Joi = require("Joi");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     firstName: String,
     lastName: String,
-    email: { type: String, unique: true },
+    email: { type: String, unique: true, index: true },
     password: String,
+    salt: String,
     createdAt: { type: Date, default: Date.now }
 });
-
-const User = mongoose.model("User", userSchema);
 
 function validate(userData) {
     const joiSchema = Joi.object({
@@ -38,12 +39,28 @@ function validate(userData) {
             .required(),
         password: Joi.string()
             .min(5)
-            .max(20)
             .required()
     });
     return Joi.validate(userData, joiSchema);
 }
 
-userSchema.methods.setPassword = password => {};
+userSchema.methods.setPassword = function(password) {
+    this.salt = 10;
+    this.password = password;
+};
+
+userSchema.methods.validatePassword = function(password) {
+    return this.password == password;
+};
+
+userSchema.methods.generateJWT = function() {
+    return jwt.sign(
+        { id: this._id, email: this.email },
+        config.get("privateKey"),
+        { expiresIn: 1 }
+    );
+};
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = { User, validate };

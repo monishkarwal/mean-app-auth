@@ -8,6 +8,10 @@ const config = require("config");
 const defaultRoute = require("./routes/default");
 const registerRoute = require("./routes/register");
 const loginRoute = require("./routes/login");
+const protectedRoute = require("./routes/protected");
+
+// Middleware
+const errorHandler = require("./middleware/errorHandler");
 
 // App specific variables
 const app = express();
@@ -17,6 +21,7 @@ const dbUrl = config.get("dbUrl");
 // Express configuration
 app.use(express.json());
 app.use(cors());
+app.use(errorHandler);
 
 // Database Configuration
 mongoose
@@ -28,5 +33,6 @@ mongoose
 app.use("/", defaultRoute);
 app.use("/register", registerRoute);
 app.use("/login", loginRoute);
+app.use("/protected", protectedRoute);
 
 app.listen(PORT, () => console.log(`Served at Port: ${PORT}...`));

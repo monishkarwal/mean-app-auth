@@ -27,6 +27,7 @@ Router.post("/", async (req, res) => {
         });
     } else {
         user = new User(value);
+        user.setPassword(value.password);
         await user.save();
         res.send(user);
     }
