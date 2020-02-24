@@ -1,17 +1,8 @@
-/*
-TODO:
-    1. User model
-    2. User model methods (setPassword, validatePassword, generateJWT)
-    3. Password hashing
-    4. Crypto module
-    5. Joi validation
-
-*/
-
 const mongoose = require("mongoose");
 const Joi = require("Joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const crypto = require("crypto");
 
 const Schema = mongoose.Schema;
 
@@ -45,19 +36,24 @@ function validate(userData) {
 }
 
 userSchema.methods.setPassword = function(password) {
-    this.salt = 10;
-    this.password = password;
+    this.salt = crypto.randomBytes(16).toString("hex");
+    this.password = crypto
+        .pbkdf2Sync(password, this.salt, 1000, 64, "sha512")
+        .toString("hex");
 };
 
 userSchema.methods.validatePassword = function(password) {
-    return this.password == password;
+    let _password = crypto
+        .pbkdf2Sync(password, this.salt, 1000, 64, "sha512")
+        .toString("hex");
+    return this.password == _password;
 };
 
 userSchema.methods.generateJWT = function() {
     return jwt.sign(
         { id: this._id, email: this.email },
         config.get("privateKey"),
-        { expiresIn: 1 }
+        { expiresIn: "5m" }
     );
 };
 

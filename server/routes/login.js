@@ -1,5 +1,6 @@
 const express = require("express");
-const { User, validate } = require("../models/user");
+const Joi = require("Joi");
+const { User } = require("../models/user");
 const Router = express.Router();
 
 Router.get("/", (req, res) => {
@@ -7,20 +8,45 @@ Router.get("/", (req, res) => {
 });
 
 Router.post("/", async (req, res) => {
-    let user = await User.findOne({ email: req.body.email });
+    const { error } = validate(req.body);
+    if (error)
+        return res.status(400).json({
+            errorType: error.name,
+            errorMessage: error.details[0].message
+        });
 
-    if (user) {
-        let result = user.validatePassword(req.body.password);
-        if (result) {
-            let _token = await user.generateJWT();
-            return res.send({
-                token: _token
-            });
-        }
-    }
-    return res.send({
-        message: "Invalid Username or Password!"
+    let user = await User.findOne({ email: req.body.email });
+    if (!user)
+        return res.status(400).send({
+            message: "Invalid Username or Password!"
+        });
+
+    let result = await user.validatePassword(req.body.password);
+    if (!result)
+        return res
+            .status(400)
+            .send({ message: "Invalid Username or Password!" });
+
+    let _token = await user.generateJWT();
+    res.send({
+        token: _token
     });
 });
+
+function validate(req) {
+    const schema = {
+        email: Joi.string()
+            .min(5)
+            .max(255)
+            .required()
+            .email(),
+        password: Joi.string()
+            .min(5)
+            .max(255)
+            .required()
+    };
+
+    return Joi.validate(req, schema);
+}
 
 module.exports = Router;

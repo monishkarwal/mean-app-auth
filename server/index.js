@@ -25,7 +25,11 @@ app.use(errorHandler);
 
 // Database Configuration
 mongoose
-    .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(dbUrl, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    })
     .then(() => console.log("Connected with Database successfully..."))
     .catch(error => console.log("Connection with Database failed!", error));
 

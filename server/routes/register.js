@@ -13,7 +13,7 @@ Router.post("/", async (req, res) => {
     const { value, error } = result;
 
     if (error) {
-        res.json({
+        return res.status(400).json({
             errorType: error.name,
             errorMessage: error.details[0].message
         });
@@ -22,7 +22,7 @@ Router.post("/", async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
 
     if (user) {
-        res.json({
+        return res.status(400).json({
             message: "User already exists!"
         });
     } else {
