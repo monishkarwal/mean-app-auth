@@ -1,0 +1,17 @@
+.inner-wrapper {
+  border: 2px solid silver;
+  border-radius: 20px;
+  min-height: 350px;
+  width: 600px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.card-wrapper {
+  padding: 10px;
+}
+
+.mat-form-field {
+  width: 100%;
+}

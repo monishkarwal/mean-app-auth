@@ -29,7 +29,9 @@ Router.post("/", async (req, res) => {
         user = new User(value);
         user.setPassword(value.password);
         await user.save();
-        res.send(user);
+        res.send({
+            message: "Successfully Registered!"
+        });
     }
 });
 

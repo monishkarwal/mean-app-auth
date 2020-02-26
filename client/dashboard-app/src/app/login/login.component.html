@@ -1,0 +1,65 @@
+<div class="wrapper">
+  <div class="inner-wrapper">
+    <mat-tab-group mat-stretch-tabs>
+      <mat-tab label="Login">
+        <mat-card class="card-wrapper">
+          <mat-card-content>
+            <form #f="ngForm" (ngSubmit)="signIn(f.value)">
+              <mat-form-field>
+                <input
+                  type="text"
+                  name="email"
+                  ngModel
+                  matInput
+                  placeholder="Username"
+                />
+              </mat-form-field>
+
+              <mat-form-field>
+                <input
+                  type="password"
+                  name="password"
+                  ngModel
+                  matInput
+                  placeholder="Password"
+                />
+              </mat-form-field>
+
+              <div class="button">
+                <button type="submit" mat-raised-button>Login</button>
+              </div>
+              <div *ngIf="invalidLogin">
+                Invalid Login
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Register">
+        <mat-card class="card-wrapper">
+          <mat-card-content>
+            <form>
+              <mat-form-field>
+                <input type="text" matInput placeholder="Username" />
+              </mat-form-field>
+              <mat-form-field>
+                <input type="text" matInput placeholder="Username" />
+              </mat-form-field>
+              <mat-form-field>
+                <input type="text" matInput placeholder="Username" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <input type="password" matInput placeholder="Password" />
+              </mat-form-field>
+
+              <div class="button">
+                <button type="submit" mat-raised-button>Login</button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
